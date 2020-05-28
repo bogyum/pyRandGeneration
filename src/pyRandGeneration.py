@@ -4,7 +4,10 @@
 '''
 
 import logging, sys, random
-#import tqdm
+from tqdm import tqdm
+
+gens = {}
+nums = {}
 
 def getRandNumbers(min, max, choice):
     rand = []
@@ -14,6 +17,7 @@ def getRandNumbers(min, max, choice):
         while randNum in rand:
             randNum = random.randint(min, max)
         rand.append(randNum)
+        nums[randNum] += 1
 
     rand.sort()
     return rand
@@ -35,19 +39,23 @@ if __name__ == "__main__" :
     attempts = int(sys.argv[3])
     minFreq = int(sys.argv[4])
 
-    gens = {}
-    
-    #for i in tqdm(range(0, attempts)):
-    for i in range(0, attempts):
-        rand = ' '.join([str(x) for x in getRandNumbers(min, max, choice)])
+    for i in range(0, max+1):
+        nums[i] = 0
 
-        if gens.__contains__(rand) :
-            gens[rand] += 1
+    for i in tqdm(range(0, attempts)):
+        rand = getRandNumbers(min, max, choice)
+        strRand = ' '.join([str(x) for x in rand ])
+
+        if gens.__contains__(strRand) :
+            gens[strRand] += 1
         else :
-            gens[rand] = 1
+            gens[strRand] = 1
 
     sort_gens = sorted(gens.items(), key=lambda x: x[1], reverse=True)
+    sort_nums = sorted(nums.items(), key=lambda x: x[1], reverse=True)
 
     for i in sort_gens:
         if i[1] < minFreq: break
         print("Generation key : %s - %s freq" % (i[0], i[1]))
+
+    print(sort_nums)
