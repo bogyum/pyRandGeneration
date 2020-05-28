@@ -1,9 +1,10 @@
 '''
-    RAND NUMBER GENERATION
-      - 파라미터로 주어진 값의 범위에서 랜덤 값 생성
+#    RAND NUMBER GENERATION
+#      - 파라미터로 주어진 값의 범위에서 랜덤 값 생성
 '''
 
 import logging, sys, random
+#import tqdm
 
 def getRandNumbers(min, max, choice):
     rand = []
@@ -14,7 +15,6 @@ def getRandNumbers(min, max, choice):
             randNum = random.randint(min, max)
         rand.append(randNum)
 
-
     rand.sort()
     return rand
 
@@ -24,8 +24,8 @@ if __name__ == "__main__" :
 
     if len(sys.argv) != 5:
         logging.error("Argument error")
-        logging.error("  Allowed argument :: (Range of rand number) (Number of choices) (Number of attempts)")
-        logging.error("                          (1_46) (6) (10) ")
+        logging.error("  Allowed argument :: (Range of rand number) (Number of choices) (Number of attempts) (Minimum freq for output)")
+        logging.error("                          (1_46) (6) (10) (10)")
         exit()
 
     min = int(sys.argv[1].split("_")[0])
@@ -33,18 +33,21 @@ if __name__ == "__main__" :
 
     choice = int(sys.argv[2])
     attempts = int(sys.argv[3])
+    minFreq = int(sys.argv[4])
 
-    lotto = list(map(int, sys.argv[4].split("_")))
-    print("lotto :: %s " % lotto)
-
+    gens = {}
+    
+    #for i in tqdm(range(0, attempts)):
     for i in range(0, attempts):
-        rand = getRandNumbers(min, max, choice)
+        rand = ' '.join([str(x) for x in getRandNumbers(min, max, choice)])
 
-        match = 0
-        for gen in rand:
-            if (lotto.__contains__(gen)):
-                match += 1
+        if gens.__contains__(rand) :
+            gens[rand] += 1
+        else :
+            gens[rand] = 1
 
-        if match > 5 :
-            print("%s attempt :: %s  - %s 개" % (i, rand, match))
+    sort_gens = sorted(gens.items(), key=lambda x: x[1], reverse=True)
 
+    for i in sort_gens:
+        if i[1] < minFreq: break
+        print("Generation key : %s - %s freq" % (i[0], i[1]))
