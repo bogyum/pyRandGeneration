@@ -19,6 +19,7 @@ if __name__=="__main__":
         while(True):
             line = wins.readline().strip()
             if not line: break
+            if line[0] == '#': continue
 
             win = " ".join(line.split()).split(" ")
 
