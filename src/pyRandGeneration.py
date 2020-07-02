@@ -68,3 +68,12 @@ if __name__ == "__main__" :
             minIndex = i
 
     print("\nExpected lotto wins[%s] :: %s, %s" % (minIndex, sorted(minRand), minAvg))
+
+    count = 0
+    matchedNums = []
+    for num in minRand:
+        if num in [1, 3, 23, 24, 27, 43, 34]:
+            count += 1
+            matchedNums.append(num)
+
+    print("\nMatched num on expected :: %s | %s" % (count, matchedNums))
